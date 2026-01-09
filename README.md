@@ -1,13 +1,114 @@
-## Explainable Anomaly Detection and Repair
+# Type-Aware Anomaly Detection and Safe Repair for Time Series
 
-This project implements an explainable time-series anomaly detection pipeline
-using STL decomposition and robust statistics.
+This project presents a **type-aware, drift-sensitive anomaly detection and repair pipeline** for univariate time series.
+Unlike naive anomaly correction methods, the proposed approach **distinguishes between spike anomalies and concept drift**, and applies **confidence-gated repairs** to guarantee safety.
 
-Features:
-- STL-based trend/seasonal decomposition
-- Robust anomaly detection (MAD)
-- Explainable anomaly characterization
-- Confidence scoring
-- Type-aware repair strategy
+---
 
-Status: Work in progress
+## 🚀 Key Features
+
+- **Robust STL-based decomposition** (trend / seasonal / residual)
+- **MAD-based spike anomaly detection** with high recall
+- **Slope-aware drift detection** using sustained trend changes
+- **Type-aware anomaly classification**
+  - Spike
+  - Spike-in-drift
+  - Moderate deviation
+- **Confidence-weighted repair mechanism**
+  - Repairs applied **only to safe spike anomalies**
+  - Drift regions explicitly excluded from repair
+- **Explainable anomaly decisions**
+  - z-score, confidence, drift-awareness per anomaly
+- **Safety guarantees**
+  - Zero negative-impact repairs observed
+  - Conservative repair policy inside drift
+
+---
+
+## 🧠 Method Overview
+
+1. **STL decomposition** is applied to isolate residual anomalies.
+2. **Spike anomalies** are detected using a robust MAD-based z-score.
+3. **Concept drift** is identified via sustained slope changes in the trend.
+4. Each anomaly is **explained and classified** based on magnitude and drift context.
+5. **Repairs are applied only when safe**, using:
+   - Trend + seasonal reconstruction
+   - Confidence-weighted blending
+6. Drift regions are **explicitly protected** from forced corrections.
+
+---
+
+## 📊 Quantitative Results (Synthetic Injection)
+
+| Metric | Value |
+|------|------|
+| Precision | 0.319 |
+| Recall | 0.759 |
+| RMSE (before repair) | 305.43 |
+| RMSE (after repair) | 177.12 |
+| RMSE (drift excluded) | 78.07 |
+| Avg repair improvement | **97.8%** |
+| Repair safety rate | **100%** |
+| Spike repair coverage | **100%** |
+
+> Although detection precision is intentionally relaxed to maximize recall,
+> the repair module is conservative and confidence-gated, ensuring **zero negative impact**.
+
+---
+
+## 📈 Visualization
+
+The figure below illustrates:
+- Corrupted vs original vs repaired series
+- Detected spike anomalies
+- Drift regions (shaded)
+- Repaired points only outside drift
+
+<p align="center">
+  <img src="figures/result.png" width="900">
+</p>
+
+---
+
+## 📂 Project Structure
+
+```text
+.
+├── data/
+│   └── yahoo.csv
+├── figures/
+│   └── result.png
+├── load_data.py
+├── visualization.py
+├── main.py
+└── README.md
+🛠️ How to Run
+bash
+Kodu kopyala
+pip install -r requirements.txt
+python main.py
+🔬 Design Philosophy
+Detection ≠ Repair
+
+Recall is prioritized during detection.
+
+Repair decisions are type-aware, confidence-weighted, and drift-sensitive.
+
+The system is designed to be safe by construction.
+
+📌 Use Cases
+Financial time series cleaning
+
+Monitoring systems with regime shifts
+
+Preprocessing pipelines for forecasting models
+
+Research on safe anomaly correction
+
+✍️ Author
+Selin Ayhan
+Computer Engineering
+Ankara University
+
+yaml
+Kodu kopyala
