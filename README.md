@@ -110,5 +110,3 @@ Selin Ayhan
 Computer Engineering
 Ankara University
 
-yaml
-Kodu kopyala
